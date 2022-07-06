@@ -1,213 +1,87 @@
-let GameBoard = (function(){
+class Library {
+    #books;
 
-    let gameBoard = [];
-    const getGameBoard = () => gameBoard;
+    constructor() {
+        this.#books = [];
+    }
 
-    for(let i = 0; i < 9; ++i) gameBoard.push(document.createElement('button'));
+    addBook(newBook) {
+        this.#books.push(newBook);
+    }
+
+    get getBooks() {
+        return this.#books;
+    }
+
+    get size() {
+        return this.#books.length;
+    }
+}
+
+class Book {
+    #title;
+    #author;
+    #pages;
+    #haveRead = false;
+    
+    constructor(title, author, pages, haveRead) {
+        this.#title = title;
+        this.#author = author;
+        this.#pages = pages;
+        this.#haveRead = haveRead;
+    }
+
+    get bookTitle() {
+        return this.#title;
+    }
+
+    get bookAuthor() {
+        return this.#author;
+    }
+
+    get bookPages() {
+        return this.#pages;
+    }
+
+    get bookReadStatus() {
+        return this.#haveRead;
+    }
+}
+
+let myLibrary = new Library();
+
+let hyperion = new Book('Hyperion', 'Dan Simmons', 623, true);
+let redRising = new Book('Red Rising', 'Pierce Brown', 560, true);
+let dune = new Book('Dune', 'Frank Herbert', 670);
+
+myLibrary.addBook(hyperion);
+myLibrary.addBook(redRising);
+myLibrary.addBook(dune);
+
+let DisplayLibrary = (function(libraryObj) {
+
+    const library = libraryObj;
 
     // Cache the DOM
-    const gameBoardElement = document.querySelector('#game-board');
-    
-    // Render the gameboard
-    function render(){
-        gameBoard.forEach((element) => {
-            element.setAttribute('class', 'board-square');
-            element.textContent = ' ';
-            gameBoardElement.appendChild(element);
-        });
+    const libraryContainer = document.querySelector('.library-container');
+
+    // Render the library
+    function render() {
+
+        for(let i = 0; i < library.size; ++i) {
+            const bookCard = document.createElement('div');
+            bookCard.classList.add('book-card');
+            bookCard.setAttribute('data-id', i);
+            libraryContainer.appendChild(bookCard);
+
+            const bookTitle = document.createElement('p');
+            bookTitle.innerHTML = `Title: <i>${library.getBooks[i].bookTitle}</i>`;
+            bookCard.appendChild(bookTitle);
+        }
     }
 
     render();
-  
-    return {getGameBoard};
 
-})();
+    return({render});
 
-let Player = (playerName, playerIcon) => {
-    let name = playerName;
-    let icon = playerIcon;
-
-    const getIcon = () => icon;
-    const getName = () => name;
-    const setIcon = (symbol) => {
-        icon = symbol;
-    }
-
-    return {getIcon, setIcon, getName};
-}
-
-const PlayGame = (player1, player2, gameBoard) => {
-    let p1 = player1;
-    let p2 = player2;
-    let board = gameBoard;
-    let currentPlayer = p1;
-
-    // Cache DOM
-    const iconX = document.querySelector('#x-icon');
-    const iconO = document.querySelector('#o-icon');
-    const gameBoardBtns = document.querySelectorAll('.board-square');
-    const restartBtn = document.querySelector('.restart-btn');
-    const endGame = document.querySelector('.endgame-display');
-    const endGameMessage = document.querySelector('.endgame-message p');
-
-    // Bind events
-    iconX.addEventListener('click', () => {
-        p1.setIcon('X');
-        p2.setIcon('O');
-        console.log(`Player 1 is ${p1.getIcon()}`);
-        console.log(`Player 2 is ${p2.getIcon()}`);
-        console.log('SUP');
-        iconX.classList.toggle('selected');
-        if(iconO.classList.contains('selected')){
-            iconO.classList.toggle('selected');
-        }
-    });
-
-    iconO.addEventListener('click', () => {
-        p1.setIcon('O');
-        p2.setIcon('X');
-        console.log(`Player 1 is ${p1.getIcon()}`);
-        console.log(`Player 2 is ${p2.getIcon()}`);
-        iconO.classList.toggle('selected');
-        if(iconX.classList.contains('selected')){
-            iconX.classList.toggle('selected');
-        }
-    });
-
-    gameBoardBtns.forEach(function(btn, index){
-        btn.addEventListener('click', () => {
-            iconX.disabled = true;
-            iconO.disabled = true;
-            if(btn.textContent === ' ') {
-                btn.textContent = currentPlayer.getIcon();
-                currentPlayer = (currentPlayer.getIcon() === 'X') ? p2 : p1;
-                hasWinner(currentPlayer);
-            }
-        });
-    });
-
-    restartBtn.addEventListener('click', resetGameBoard);
-
-    endGame.addEventListener('click', () => {
-        endGame.classList.toggle('hidden');
-    })
-
-    // Game logic
-    const hasWinner = (currentPlayer) => {
-
-        const winner = (currentPlayer === p1) ? p2 : p1;
-        if(board.getGameBoard()[0].textContent === 'X' && board.getGameBoard()[1].textContent === 'X' && board.getGameBoard()[2].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());           
-        };
-        if(board.getGameBoard()[3].textContent === 'X' && board.getGameBoard()[4].textContent === 'X' && board.getGameBoard()[5].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[6].textContent === 'X' && board.getGameBoard()[7].textContent === 'X' && board.getGameBoard()[8].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[0].textContent === 'X' && board.getGameBoard()[3].textContent === 'X' && board.getGameBoard()[6].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[1].textContent === 'X' && board.getGameBoard()[4].textContent === 'X' && board.getGameBoard()[7].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[2].textContent === 'X' && board.getGameBoard()[5].textContent === 'X' && board.getGameBoard()[8].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[0].textContent === 'X' && board.getGameBoard()[4].textContent === 'X' && board.getGameBoard()[8].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[2].textContent === 'X' && board.getGameBoard()[4].textContent === 'X' && board.getGameBoard()[6].textContent === 'X') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-
-        // player 2
-        if(board.getGameBoard()[0].textContent === 'O' && board.getGameBoard()[1].textContent === 'O' && board.getGameBoard()[2].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[3].textContent === 'O' && board.getGameBoard()[4].textContent === 'O' && board.getGameBoard()[5].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[6].textContent === 'O' && board.getGameBoard()[7].textContent === 'O' && board.getGameBoard()[8].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[0].textContent === 'O' && board.getGameBoard()[3].textContent === 'O' && board.getGameBoard()[6].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[1].textContent === 'O' && board.getGameBoard()[4].textContent === 'O' && board.getGameBoard()[7].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[2].textContent === 'O' && board.getGameBoard()[5].textContent === 'O' && board.getGameBoard()[8].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[0].textContent === 'O' && board.getGameBoard()[4].textContent === 'O' && board.getGameBoard()[8].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-        if(board.getGameBoard()[2].textContent === 'O' && board.getGameBoard()[4].textContent === 'O' && board.getGameBoard()[6].textContent === 'O') {
-            console.log(`${winner.getName()} WINS!`);
-            disableGameBoard();
-            displayEndgame(winner.getName());
-        };
-    }
-
-    const disableGameBoard = () => {
-        gameBoardBtns.forEach(function(btn) {
-            btn.disabled = true;                
-        });
-    }
-
-    const enableGameBoard = () => {
-        gameBoardBtns.forEach(function(btn) {
-            btn.disabled = false;                
-        });
-    }
-
-    function resetGameBoard(){
-        gameBoardBtns.forEach(function(btn) {
-            btn.textContent = ' ';
-            iconX.disabled = false;
-            iconO.disabled = false;
-            enableGameBoard();           
-        }); 
-    }
-
-    const displayEndgame = (winner) => {
-        endGameMessage.textContent = `${winner} wins!`;
-        endGame.classList.toggle('hidden'); 
-    }
-}
-
-const player1 = Player('Player 1', 'X');
-const player2 = Player('Player 2', 'O');
-
-PlayGame(player1, player2, GameBoard);
+})(myLibrary);
