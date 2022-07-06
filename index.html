@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="./style.css">
+    <!-- <link rel="icon" href="./favicon.ico" type="image/x-icon"> -->
+  </head>
+  <body>
+    <div class="endgame-display hidden">
+      <div class="endgame-message">
+        <p></p>
+      </div>
+    </div>
+    <div id="title">
+        <h1>Tic-Tac-Toe</h1>  
+    </div>
+    <div id="game-container">
+        <div id="level-select">
+          <button class="level-btn level-easy">Easy</button>
+          <button class="level-btn level-medium">Medium</button>
+          <button class="level-btn level-hard">Hard</button>
+          <button class="level-btn level-nightmare">Nightmare</button>
+        </div>
+        <div id="icons-container">
+          <div class="icon-select">
+            <button class="icon-btn selected" id="x-icon">X</button>
+          </div>
+          <div class="icon-select">
+            <button class="icon-btn" id="o-icon">O</button>
+          </div>
+        </div>
+        <div id="gameboard-container">
+          <div id="game-board"></div>
+        </div>
+        <div id="restart">
+          <button class="restart-btn">Restart</button>
+        </div>
+    </div>
+	<script src="script.js"></script>
+  </body>
+</html>
