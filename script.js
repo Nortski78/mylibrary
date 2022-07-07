@@ -154,3 +154,37 @@ let DisplayLibrary = (function() {
     return({render});
 
 })(myLibrary);
+
+let AddBook = (function() {
+    // Cache the DOM
+    const libraryContainer = document.querySelector('.library-container');
+    const addBookBtn = document.querySelector('.add-book-btn');
+    const formContainer = document.querySelector('.form-container');
+    const inputTitle = document.querySelector('#title');
+    const inputAuthor = document.querySelector('#author');
+    const inputPages = document.querySelector('#pages');
+    const inputIsRead = document.querySelector('#is-read');
+    const submitBookBtn = document.querySelector('.submit-book-btn');
+
+    // Bind events
+    addBookBtn.addEventListener('click', () => {
+        formContainer.classList.toggle('hidden');
+    })
+
+    submitBookBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log(inputIsRead.value);
+        const title = inputTitle.value;
+        const author = inputAuthor.value;
+        const pages = inputPages.value;
+        const isRead = (inputIsRead.checked) ? true : false;
+
+        let newBook = new Book(title, author, pages, isRead);
+        myLibrary.getBooks.push(newBook);
+        libraryContainer.innerHTML = "";
+        DisplayLibrary.render();
+        console.log(myLibrary);
+        formContainer.classList.toggle('hidden');
+    })
+
+})();

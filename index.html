@@ -9,6 +9,21 @@
     <!-- <link rel="icon" href="./favicon.ico" type="image/x-icon"> -->
   </head>
   <body>
+    <div class="form-container hidden">
+      <div class="add-book-form">
+        <p>Add new book</p>
+        <form>
+          <input type="text" class="form-input" id="title" name="title" placeholder="Title" />
+          <input type="text" class="form-input" id="author" name="author" placeholder="Author" />
+          <input type="number" class="form-input" id="pages" name="pages" placeholder="Pages" />
+          <div class="is-read">
+            <label for="is-read">Have you read it?</label>
+            <input type="checkbox" id="is-read" name="is-read">
+          </div>
+          <button type="submit" class="submit-book-btn">Submit</button>
+        </form>
+      </div>
+    </div>
     <main class="main-container">
       <div class="page-title">
         <h1>My Library</h1>
@@ -17,7 +32,7 @@
         <button class="add-book-btn">+ BOOK</button>
       </div>
       <div class="library-container"></div>
-      </div>      
+      </div>
     </main>
 	  <script src="script.js"></script>
   </body>
