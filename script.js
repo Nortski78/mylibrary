@@ -22,9 +22,9 @@ class Book {
     #title;
     #author;
     #pages;
-    #haveRead = false;
+    #haveRead;
     
-    constructor(title, author, pages, haveRead) {
+    constructor(title, author, pages, haveRead = false) {
         this.#title = title;
         this.#author = author;
         this.#pages = pages;
@@ -46,6 +46,10 @@ class Book {
     get bookReadStatus() {
         return this.#haveRead;
     }
+
+    set bookReadStatus(status) {
+        this.#haveRead = status;
+    }
 }
 
 let myLibrary = new Library();
@@ -58,9 +62,9 @@ myLibrary.addBook(hyperion);
 myLibrary.addBook(redRising);
 myLibrary.addBook(dune);
 
-let DisplayLibrary = (function(libraryObj) {
+let DisplayLibrary = (function() {
 
-    const library = libraryObj;
+    //const library = libraryObj;
 
     // Cache the DOM
     const libraryContainer = document.querySelector('.library-container');
@@ -68,15 +72,80 @@ let DisplayLibrary = (function(libraryObj) {
     // Render the library
     function render() {
 
-        for(let i = 0; i < library.size; ++i) {
+        for(let i = 0; i < myLibrary.getBooks.length; ++i) {
             const bookCard = document.createElement('div');
             bookCard.classList.add('book-card');
             bookCard.setAttribute('data-id', i);
             libraryContainer.appendChild(bookCard);
+            const cardHeadings = document.createElement('div');
+            const cardData = document.createElement('div');
+            cardHeadings.classList.add('card-heading');
+            cardData.classList.add('card-data');
+            bookCard.appendChild(cardHeadings);
+            bookCard.appendChild(cardData);
+            const readStatus = document.createElement('div');
+            const removeBook = document.createElement('div');
+            readStatus.classList.add('card-btn-container');
+            removeBook.classList.add('card-btn-container');
+            bookCard.appendChild(readStatus);
+            bookCard.appendChild(removeBook);
+            const readStatusBtn = document.createElement('button');
+            readStatusBtn.classList.add('read-status-button');
+            const removeBookBtn = document.createElement('button');
+            removeBookBtn.classList.add('remove-book-button')
+            removeBookBtn.innerText = 'Remove';
+            readStatus.appendChild(readStatusBtn);
+            removeBook.appendChild(removeBookBtn);
 
-            const bookTitle = document.createElement('p');
-            bookTitle.innerHTML = `Title: <i>${library.getBooks[i].bookTitle}</i>`;
-            bookCard.appendChild(bookTitle);
+            const bookTitleHeading = document.createElement('p');
+            bookTitleHeading.innerHTML = `Title:`;
+            const bookAuthorHeading = document.createElement('p');
+            bookAuthorHeading.innerHTML = `Author:`;
+            const bookPagesHeading = document.createElement('p');
+            bookPagesHeading.innerHTML = `Pages:`;
+            const haveReadHeading = document.createElement('p');
+            haveReadHeading.innerHTML = `Have read:`;
+
+            const bookTitleData = document.createElement('p');
+            bookTitleData.innerHTML = `<i>${myLibrary.getBooks[i].bookTitle}</i>`;
+            const bookAuthorData = document.createElement('p');
+            bookAuthorData.innerHTML = `<i>${myLibrary.getBooks[i].bookAuthor}</i>`;
+            const bookPagesData = document.createElement('p');
+            bookPagesData.innerHTML = `<i>${myLibrary.getBooks[i].bookPages}</i>`;
+           
+            if(myLibrary.getBooks[i].bookReadStatus) {
+                readStatusBtn.innerText = 'Read';
+                readStatusBtn.classList.toggle('read');
+            }
+            else {readStatusBtn.innerText = 'Not read';}
+
+            cardHeadings.appendChild(bookTitleHeading);
+            cardHeadings.appendChild(bookAuthorHeading);
+            cardHeadings.appendChild(bookPagesHeading);
+            cardData.appendChild(bookTitleData);
+            cardData.appendChild(bookAuthorData);
+            cardData.appendChild(bookPagesData);
+
+            // Bind card buttons
+            readStatusBtn.addEventListener('click', () => {
+                readStatusBtn.classList.toggle('read');
+                if(myLibrary.getBooks[i].bookReadStatus) {
+                    myLibrary.getBooks[i].bookReadStatus = false;
+                    readStatusBtn.innerText = 'Not read';
+                } else {
+                    myLibrary.getBooks[i].bookReadStatus = true;
+                    readStatusBtn.innerText = 'Read';
+                }
+                console.log(myLibrary.getBooks);
+            });
+
+            removeBookBtn.addEventListener('click', () => {
+                libraryContainer.removeChild(bookCard);
+                myLibrary.getBooks.splice(i, 1);
+                libraryContainer.innerHTML = "";
+                render();
+                console.log(myLibrary);
+            });
         }
     }
 
